@@ -21,9 +21,7 @@ _loadpath()
 			local _CUR_PATH="${line[1]}"
 			if [ "$_CUR_ALIAS" != "" ]
 			then
-				IFS=$OLD_IFS
-				aliases=("${aliases[@]}" "$_CUR_ALIAS")
-				IFS=';'
+				aliases+=( "$_CUR_ALIAS" )
 			fi
 		done < $_SAVE_LOAD_PATH_FILE
 	fi
@@ -46,12 +44,7 @@ _loadpath()
 
 	if [[ "${prevprev}" == "" || ( "${prevprev}" == "${cur}" && "${cur}" != "" ) ]]
 	then
-		COMPREPLY=( `echo "${aliases[@]}" | sed 's/ /\n/g' | grep "^${cur}" | sed ":a;N;\$!ba;s/\\n/\\$IFS/g"` )
-		#echo ""
-		#echo "test: \"compgen -W \"${aliases[@]}\" -- \"$cur\" \""
-		#echo "tes2t: `echo "${aliases[@]}"`"
-		#echo "al: ${aliases[@]}"
-		#echo "rep: ${COMPREPLY}"
+		COMPREPLY=( ` compgen -W "${aliases[*]}" -- "${cur}" ` )
 	fi
 
 	return 0
