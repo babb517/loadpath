@@ -55,9 +55,9 @@ then
 
 	if [ "$FAIL" == "true" ]
 	then
-		echo "ERROR: Loadpath currently doesn't support automatic global installation on your system."
-		echo "       Please run the script as non-root to install for your user acount or attempt"
-		echo "       a manual installation."
+		echo "ERROR: Loadpath currently doesn't support automatic global installation on your system." 1>&2
+		echo "       Please run the script as non-root to install for your user acount or attempt" 1>&2
+		echo "       a manual installation." 1>&2
 		exit 1
 	fi
 
@@ -68,8 +68,8 @@ else
 		BASHRC="$HOME/.bashrc"
 		LIB_DIR="$HOME/lib/loadpath"
 	else
-		echo "ERROR: Loadpath currently doesn't support automatic global installation on your system."
-		echo "       Please manually install the loadpath script and ensure it is run upon terminal startup."
+		echo "ERROR: Loadpath currently doesn't support automatic global installation on your system." 1>&2
+		echo "       Please manually install the loadpath script and ensure it is run upon terminal startup" 1>&2
 		exit 1
 	fi
 
@@ -97,10 +97,10 @@ then
 			chown -R "$USER":"$USER" "/etc/bash_completion.d/loadpath-completion.sh"
 			chmod 755 "/etc/bash_completion.d/loadpath-completion.sh"
 		else
-			echo "ERROR: Failed to install autocomplete."
+			echo "ERROR: Failed to install autocomplete." 1>&2
 		fi
 	else
-		echo "WARNING: Cannot install autocomplete functionality without root priviledges."
+		echo "WARNING: Cannot install autocomplete functionality without root priviledges." 1>&2
 	fi
 
 	echo "The loadpath functions have been successfully installed."
@@ -111,15 +111,15 @@ then
 	lpath -h
 	if [ "$?" != "0" ]
 	then
-		echo "ERROR: An error occurred running the loadpath functions."
-		echo "       Please manually install the loadpath script and ensure it is run upon terminal startup."
+		echo "ERROR: An error occurred running the loadpath functions." 1>&2
+		echo "       Please manually install the loadpath script and ensure it is run upon terminal startup." 1>&2
 		exit 1
 	fi
 
 
 else
-	echo "ERROR: An error occurred installing loadpath functions."
-	echo "       Please manually install the loadpath script and ensure it is run upon terminal startup."
+	echo "ERROR: An error occurred installing loadpath functions." 1>&2
+	echo "       Please manually install the loadpath script and ensure it is run upon terminal startup." 1>&2
 	exit 1
 fi
 

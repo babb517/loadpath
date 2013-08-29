@@ -73,7 +73,7 @@ function listpath() {
 		return 0
 	elif [ "$1" != "" ]
 	then
-		echo "ERROR: Bad argument \"$1\"."
+		echo "ERROR: Bad argument \"$1\"." 1>&2
 		loadpath_help
 		return 1
 	fi
@@ -92,7 +92,7 @@ function listpath() {
 		done < $_SAVE_LOAD_PATH_FILE
 
 	else
-		echo "ERROR: Could not access the path database file. Have you used \"savepath\" previously?" 
+		echo "ERROR: Could not access the path database file. Have you used \"savepath\" previously?" 1>&2
 		loadpath_help
 		return 1
 	fi
@@ -114,49 +114,73 @@ function lspath() {
 #                   Defaults to the working directory. 
 # --------------------------------------------------
 function savepath() {
-	
-	if [ "$1" == "-h" -o "$1" == "--help" ]
-	then
-		loadpath_help
-		return 0
-	fi
 
-	#determine path and alias.
+
 	local _PATH=`pwd`
 	local _NAME=""
+	OPTION=
 
-	if [ "$1" == "-p" ]
-	then
-		if [ "$2" != "" ]
+	# Check for --help
+	for i in "$@"
+	do
+		if [ "$i" == "--help" ]
 		then
-			_PATH="$2"
-		else
-			echo "ERROR: Expected directory after \"-p\" flag."
 			loadpath_help
-			return 1
+			return 0
 		fi
-	elif [ "$1" != "" ]
-	then
-		_NAME="$1"
-		if [ "$2" == "-p" ]
+	done
+
+	# parse options
+	local _REPEAT="true"
+	while [ "$_REPEAT" == "true" ]
+	do
+		while getopts ":p:h" OPTION
+		do
+			case $OPTION in
+				h)
+					loadpath_help
+					return 0
+					;;
+				p)
+					_PATH="$OPTARG"
+					;;
+				?)
+					echo "ERROR: Invalid argument \"-$OPTARG\"." 1>&2
+					loadpath_help
+						return 1
+					;;
+				:)
+					echo "ERROR: Expected a value following \"-$OPTARG\"." 1>&2
+					loadpath_help
+					return 1
+					;;
+			esac
+		done
+		shift $((OPTIND-1))
+		OPTIND=1
+
+		# Get the unadorned aliase argument if it's present.
+		if [ -z "$1" ]
 		then
-			if [ "$3" != "" ]
+			_REPEAT="false"
+		else
+			if [ -z "$_NAME" ]
 			then
-				_PATH="$3"
+				_NAME="$1"
+				shift 1
 			else
-				echo "ERROR: Expected directory after \"-p\" flag."
+				echo "ERROR: Multiple alias arguments detected. Exiting." 1>&2
 				loadpath_help
 				return 1
 			fi
 		fi
-	fi
-
+	done
 
 	# Go through the path file line by line and see about finding the path we need.
 	if [ -e $_SAVE_LOAD_PATH_FILE_TMP ] 
 	then
-		echo "ERROR: Could not lock path database file."
-		echo "       Please delete \"$_SAVE_PATH_FILE_TMP\" and try again."
+		echo "ERROR: Could not lock path database file." 1>&2
+		echo "       Please delete \"$_SAVE_PATH_FILE_TMP\" and try again." 1>&2
 		return 1
 	else
 		local _FOUND="false"
@@ -232,8 +256,8 @@ function removepath() {
 	# Go through the path file line by line and see about finding the path we need to delete.
 	if [ -e $_SAVE_LOAD_PATH_FILE_TMP ] 
 	then
-		echo "ERROR: Could not lock path database file."
-		echo "       Please delete \"$_SAVE_PATH_FILE_TMP\" and try again."
+		echo "ERROR: Could not lock path database file." 1>&2
+		echo "       Please delete \"$_SAVE_PATH_FILE_TMP\" and try again." 1>&2
 		return 1
 	else
 		local _FOUND="false"
@@ -257,7 +281,7 @@ function removepath() {
 		# write out the path if we didn't find it (it's new)
 		if [ "$_FOUND" == "false" ]
 		then
-			echo "ERROR: \"$_NAME\" does not exist."
+			echo "ERROR: \"$_NAME\" does not exist." 1>&2
 			return 1
 		fi
 	fi
@@ -315,7 +339,7 @@ function loadpath() {
 					echo "cd \"$_CUR_PATH\""
 					cd "$_CUR_PATH"
 				else
-					echo "ERROR: \"$_CUR_PATH\" is not a valid directory."
+					echo "ERROR: \"$_CUR_PATH\" is not a valid directory." 1>&2
 					_STATUS="1"
 				fi
 
@@ -326,11 +350,11 @@ function loadpath() {
 
 		if [ "$_FOUND" == "false" ]
 		then
-			echo "ERROR: The path alias \"$_NAME\" doesn't exist. Please use \"savepath\" to create it."
+			echo "ERROR: The path alias \"$_NAME\" doesn't exist. Please use \"savepath\" to create it." 1>&2
 			_STATUS="1"
 		fi
 	else
-		echo "ERROR: Could not access the path database file. Have you used \"savepath\" previously?" 
+		echo "ERROR: Could not access the path database file. Have you used \"savepath\" previously?" 1>&2
 		loadpath_help
 		_STATUS="1"
 	fi
