@@ -183,6 +183,7 @@ function savepath() {
 		echo "       Please delete \"$_SAVE_PATH_FILE_TMP\" and try again." 1>&2
 		return 1
 	else
+		touch $_SAVE_LOAD_PATH_FILE_TMP
 		local _FOUND="false"
 
 
@@ -260,6 +261,9 @@ function removepath() {
 		echo "       Please delete \"$_SAVE_PATH_FILE_TMP\" and try again." 1>&2
 		return 1
 	else
+
+		touch $_SAVE_LOAD_PATH_FILE_TMP
+
 		local _FOUND="false"
 		if [ -f $_SAVE_LOAD_PATH_FILE -a -r $_SAVE_LOAD_PATH_FILE ]
 		then
