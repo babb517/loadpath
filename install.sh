@@ -87,6 +87,22 @@ then
 	. "$LIB_DIR/loadpath.sh"
 	
 
+	# Install autocomplete if we're root.
+	if [ `id -u` == "0" ]
+	then
+		echo "Attempting to install autcomplete functionality..."
+		if [ -d "/etc/bash_completion.d" ] 
+		then
+			cp "$SCRIPTPATH/src/loadpath-completion.sh" "/etc/bash_completion.d/."
+			chown -R "$USER":"$USER" "/etc/bash_completion.d/loadpath-completion.sh"
+			chmod 755 "/etc/bash_completion.d/loadpath-completion.sh"
+		else
+			echo "ERROR: Failed to install autocomplete."
+		fi
+	else
+		echo "WARNING: Cannot install autocomplete functionality without root priviledges."
+	fi
+
 	echo "The loadpath functions have been successfully installed."
 	echo "You may now use spath, lpath, lspath, and rmpath commands"
 	echo "to manage and use path aliases."

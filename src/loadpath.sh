@@ -84,8 +84,8 @@ function listpath() {
 		printf "%14s    %s\n" "ALIAS" "PATH"
 		while IFS=';' read -a line
 		do
-			_CUR_ALIAS="${line[0]}"
-			_CUR_PATH="${line[1]}"
+			local _CUR_ALIAS="${line[0]}"
+			local _CUR_PATH="${line[1]}"
 
 			printf "%14s -> %s\n" "$_CUR_ALIAS" "$_CUR_PATH"
 		
@@ -122,8 +122,8 @@ function savepath() {
 	fi
 
 	#determine path and alias.
-	_PATH=`pwd`
-	_NAME=""
+	local _PATH=`pwd`
+	local _NAME=""
 
 	if [ "$1" == "-p" ]
 	then
@@ -159,7 +159,7 @@ function savepath() {
 		echo "       Please delete \"$_SAVE_PATH_FILE_TMP\" and try again."
 		return 1
 	else
-		_FOUND="false"
+		local _FOUND="false"
 
 
 		# Make sure default goes first
@@ -173,8 +173,8 @@ function savepath() {
 		then
 			while IFS=';' read -a line
 			do
-				_CUR_ALIAS="${line[0]}"
-				_CUR_PATH="${line[1]}"
+				local _CUR_ALIAS="${line[0]}"
+				local _CUR_PATH="${line[1]}"
 	
 				if [ "$_CUR_ALIAS" == "$_NAME" ]
 				then
@@ -236,13 +236,13 @@ function removepath() {
 		echo "       Please delete \"$_SAVE_PATH_FILE_TMP\" and try again."
 		return 1
 	else
-		_FOUND="false"
+		local _FOUND="false"
 		if [ -f $_SAVE_LOAD_PATH_FILE -a -r $_SAVE_LOAD_PATH_FILE ]
 		then
 			while IFS=';' read -a line
 			do
-				_CUR_ALIAS="${line[0]}"
-				_CUR_PATH="${line[1]}"
+				local _CUR_ALIAS="${line[0]}"
+				local _CUR_PATH="${line[1]}"
 	
 				if [ "$_CUR_ALIAS" == "$_NAME" ]
 				then
@@ -287,13 +287,13 @@ function loadpath() {
 		return 0
 	fi
 
-	_NAME=""
+	local _NAME=""
 	if [ "$1" != "" ]
 	then
 		_NAME="$1"
 	fi
 
-	STATUS="0"
+	local _STATUS="0"
 
 
 	# Look through our list of paths and find the one we're looking for
@@ -302,8 +302,8 @@ function loadpath() {
 		_FOUND="false"
 		while IFS=';' read -a line
 		do
-			_CUR_ALIAS="${line[0]}"
-			_CUR_PATH="${line[1]}"
+			local _CUR_ALIAS="${line[0]}"
+			local _CUR_PATH="${line[1]}"
 		
 			if [ "$_CUR_ALIAS" == "$_NAME" ]
 			then
@@ -316,7 +316,7 @@ function loadpath() {
 					cd "$_CUR_PATH"
 				else
 					echo "ERROR: \"$_CUR_PATH\" is not a valid directory."
-					STATUS="1"
+					_STATUS="1"
 				fi
 
 				break
@@ -327,14 +327,14 @@ function loadpath() {
 		if [ "$_FOUND" == "false" ]
 		then
 			echo "ERROR: The path alias \"$_NAME\" doesn't exist. Please use \"savepath\" to create it."
-			STATUS="1"
+			_STATUS="1"
 		fi
 	else
 		echo "ERROR: Could not access the path database file. Have you used \"savepath\" previously?" 
 		loadpath_help
-		STATUS="1"
+		_STATUS="1"
 	fi
-	return $STATUS
+	return $_STATUS
 
 }
 
