@@ -115,7 +115,7 @@ function lspath() {
 # --------------------------------------------------
 function savepath() {
 	
-	if [ $1 == "-h" -o $1 == "--help" ]
+	if [ "$1" == "-h" -o "$1" == "--help" ]
 	then
 		loadpath_help
 		return 0
@@ -217,7 +217,7 @@ function spath() {
 #                   Defaults to "" if not provided.
 # --------------------------------------------------
 function removepath() {
-	if [ $1 == "-h" -o $1 == "--help" ]
+	if [ "$1" == "-h" -o "$1" == "--help" ]
 	then
 		loadpath_help
 		return 0
@@ -281,7 +281,7 @@ function rmpath() {
 #                   Defaults to "" if not provided.
 # --------------------------------------------------
 function loadpath() {
-	if [ $1 == "-h" -o $1 == "--help" ]
+	if [ "$1" == "-h" -o "$1" == "--help" ]
 	then
 		loadpath_help
 		return 0
